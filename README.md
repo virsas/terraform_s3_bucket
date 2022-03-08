@@ -24,7 +24,7 @@ module "s3_website" {
   source    = "github.com/virsas/tfmod_s3_bucket"
   bucket    = var.website_bucket
   # the name of the logging bucket. It can be var.s3_bucket.name if it is a logging bucket itself or module.s3_bucket.id if it is any other bucket, expect the logging one.
-  logbucket = module.s3_logs.id
+  logbucket = module.s3_logs.bucket
   // Optional variables (default value: true)
   // block public access
   blockPubAcl = true
