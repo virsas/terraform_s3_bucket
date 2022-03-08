@@ -62,7 +62,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "versioning-bucket-config" {
     status = var.bucket.lifecycle
   }
 
-  epends_on = [aws_s3_bucket.bucket]
+  depends_on = [aws_s3_bucket.bucket]
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
