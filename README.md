@@ -10,13 +10,13 @@ variable "website_bucket" {
     # name of the bucket
     name = "website"
     # Enable or disable versioning of files. If enabled, files are not deleted or updated. Instead, just replaced, and old ones are flagged as older versions.
-    versionion = false
+    # Valid values Enabled or Suspended
+    versionion = "Suspended"
     # Enable or disable cleanup of the folder. Not good for a website, but good for the logs bucket.
-    lifecycle = false
+    # Valid values Enabled or Disabled
+    lifecycle = "Disabled"
     # How long to keep the files in the bucket if lifecycle is enabled
     lifecycledays = 365
-    # Type of encryption
-    encrypt_algo = "AES256"
   }
 }
 

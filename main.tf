@@ -1,33 +1,8 @@
 resource "aws_s3_bucket" "bucket" {
   bucket        = var.bucket.name
 
-  versioning {
-    enabled = var.bucket.versioning
-  }
-
   lifecycle {
     prevent_destroy = true
-  }
-
-  lifecycle_rule {
-    enabled = var.bucket.lifecycle
-
-    expiration {
-      days = var.bucket.lifecycledays
-    }
-  }
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm     = var.bucket.encrypt_algo
-      }
-    }
-  }
-
-  logging {
-    target_bucket = var.logbucket
-    target_prefix = "s3/${var.bucket.name}/"
   }
 }
 
@@ -52,6 +27,52 @@ data "template_file" "policy" {
 resource "aws_s3_bucket_policy" "config_bucket_policy" {
   bucket = "${aws_s3_bucket.bucket.id}"
   policy = data.template_file.policy.rendered
+
+  depends_on = [aws_s3_bucket.bucket]
+}
+
+resource "aws_s3_bucket_versioning" "versioning" {
+  bucket = aws_s3_bucket.bucket.id
+  versioning_configuration {
+    status = var.bucket.versioning
+  }
+
+  depends_on = [aws_s3_bucket.bucket]
+}
+
+resource "aws_s3_bucket_logging" "logging" {
+  bucket = aws_s3_bucket.bucket.id
+
+  target_bucket = var.logbucket
+  target_prefix = "s3/${var.bucket.name}/"
+
+  depends_on = [aws_s3_bucket.bucket]
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "versioning-bucket-config" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    id = "All"
+
+    expiration {
+      days = var.bucket.lifecycledays
+    }
+
+    status = var.bucket.lifecycle
+  }
+
+  epends_on = [aws_s3_bucket.bucket]
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "AES256"
+    }
+  }
 
   depends_on = [aws_s3_bucket.bucket]
 }
