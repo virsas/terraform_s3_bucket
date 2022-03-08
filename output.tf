@@ -1,7 +1,7 @@
-output "website_endpoint" {
-  value = aws_s3_bucket.bucket.website_endpoint
-}
 output "name" {
+  value = aws_s3_bucket.bucket.bucket
+}
+output "bucket" {
   value = aws_s3_bucket.bucket.bucket
 }
 output "arn" {
